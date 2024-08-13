@@ -4,6 +4,8 @@
 
 npx hardhat typechain
 npx hardhat compile
+npx hardhat node
+npx hardhat ignition deploy ignition/modules/Lottery.ts --network localhost
 
 # Installs
 
@@ -15,6 +17,7 @@ npm install --save-dev @nomicfoundation/hardhat-ignition-ethers
 npm install --save-dev @nomicfoundation/hardhat-chai-matchers
 npm install --save-dev @nomicfoundation/hardhat-network-helpers
 npm install --save-dev @nomicfoundation/hardhat-ethers ethers
+npm install @chainlink/contracts --save
 
 # TS
 
@@ -26,4 +29,4 @@ npm install --save-dev typechain @typechain/hardhat @typechain/ethers-v6
 
 # Testing
 
-npm hardhat test // Will run all in test folder
+npx hardhat test // Will run all in test folder
