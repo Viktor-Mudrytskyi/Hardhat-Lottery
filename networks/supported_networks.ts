@@ -4,35 +4,53 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const ethSepoliaRpc = process.env.ETH_SEPOLIA_RPC_URL;
-const polygonCardonaRpc = process.env.POLYGON_CARDONA_RPC_URL;
 
-if (!ethSepoliaRpc || !polygonCardonaRpc) {
-    throw new Error(
-        "Please set your ETH_SEPOLIA_RPC_URL and POLYGON_CARDONA_RPC_URL in a .env file",
-    );
+if (!ethSepoliaRpc) {
+  throw new Error(
+    "Please set your ETH_SEPOLIA_RPC_URL and POLYGON_CARDONA_RPC_URL in a .env file"
+  );
 }
 
 export const ethSepoliaNetwork: NetworkInterface = {
-    name: "Ethereum Sepolia",
-    deployName: "eth-sepolia",
-    rpcUrl: ethSepoliaRpc,
-    chainId: 11155111,
-    token: "ETH",
-    tokenPriceFeedUsd: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
-    ethUsdFeed: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
+  name: "Ethereum Sepolia",
+  deployName: "eth-sepolia",
+  rpcUrl: ethSepoliaRpc,
+  chainId: 11155111,
+  vrfCoordinator: "0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B",
+  entranceFeeEth: "0.005",
+  isLocal: false,
+  gasLane: "0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae",
+  VrfSubscriptionId:
+    "48235071697253916649246285372953863505341286224160827263486974774179303788771",
+  callbackGasLimit: "500000",
+  interval: "30",
 };
 
-export const polygonCardonaNetwork: NetworkInterface = {
-    name: "Polygon Cardona",
-    deployName: "polygon-cardona",
-    rpcUrl: polygonCardonaRpc,
-    chainId: 2442,
-    token: "MATIC",
-    tokenPriceFeedUsd: "0x7C85dD6eBc1d318E909F22d51e756Cf066643341",
-    ethUsdFeed: "0x97d9F9A00dEE0004BE8ca0A8fa374d486567eE2D",
+export const hardhatLocal: NetworkInterface = {
+  name: "Hard-Hat",
+  deployName: "hardhat",
+  chainId: 31337,
+  entranceFeeEth: "0.005",
+  isLocal: true,
+  gasLane: "0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae",
+  callbackGasLimit: "500000",
+  interval: "30",
+};
+
+export const localhost: NetworkInterface = {
+  name: "Localhost",
+  deployName: "localhost",
+  chainId: 31337,
+  entranceFeeEth: "0.005",
+  rpcUrl: "http://127.0.0.1:8545/",
+  isLocal: true,
+  gasLane: "0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae",
+  callbackGasLimit: "500000",
+  interval: "30",
 };
 
 export const chainIdToSupportedNetworks = {
-    [ethSepoliaNetwork.chainId]: ethSepoliaNetwork,
-    [polygonCardonaNetwork.chainId]: polygonCardonaNetwork,
+  [ethSepoliaNetwork.chainId]: ethSepoliaNetwork,
+  [hardhatLocal.chainId]: hardhatLocal,
+  [localhost.chainId]: localhost,
 };

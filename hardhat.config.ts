@@ -1,12 +1,17 @@
+import * as dotenv from "dotenv";
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-ethers";
+import "@nomicfoundation/hardhat-network-helpers";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-ignition-ethers";
+import "solidity-coverage";
 import {
   ethSepoliaNetwork,
-  polygonCardonaNetwork,
+  hardhatLocal,
+  localhost,
 } from "./networks/supported_networks";
+dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY || "";
 const etherscanApiKey = process.env.ETHERSCAN_API_KEY;
@@ -28,22 +33,21 @@ const config: HardhatUserConfig = {
     outDir: "typechain",
     target: "ethers-v6",
   },
+  defaultNetwork: "hardhat",
   networks: {
-    // object naame corresponds to network parameter
+    // Local
+    [hardhatLocal.deployName]: {
+      chainId: hardhatLocal.chainId,
+    },
+    [localhost.deployName]: {
+      chainId: localhost.chainId,
+      url: localhost.rpcUrl,
+    },
+    // Testnets
     [ethSepoliaNetwork.deployName]: {
       url: ethSepoliaNetwork.rpcUrl,
       accounts: [privateKey],
       chainId: ethSepoliaNetwork.chainId,
-    },
-    [polygonCardonaNetwork.deployName]: {
-      url: polygonCardonaNetwork.rpcUrl,
-      accounts: [privateKey],
-      chainId: polygonCardonaNetwork.chainId,
-    },
-    localhost: {
-      url: "http://127.0.0.1:8545/",
-      chainId: 31337, // Hardhat uses chainId 31337 by default
-      // Accounts for local host are placed by default
     },
   },
 };

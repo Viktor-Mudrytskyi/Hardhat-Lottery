@@ -6,6 +6,7 @@ npx hardhat typechain
 npx hardhat compile
 npx hardhat node
 npx hardhat ignition deploy ignition/modules/Lottery.ts --network localhost
+npx hardhat coverage
 
 # Installs
 
