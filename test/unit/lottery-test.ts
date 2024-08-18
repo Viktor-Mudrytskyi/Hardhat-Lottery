@@ -11,7 +11,7 @@ describe("Lottery Unit Tests", function () {
   const BASE_FEE = ethers.parseEther("0.25");
   const GAS_PRICE_LINK = 1e9;
   const WEI_PER_UNIT_LINK = "3872618692831434";
-  const MOCK_LINK = "100000000000000000000";
+  const MOCK_LINK = "1000000000000000000000";
   const ACCEPTABLE_LOTTERY_FEE = ethers.parseEther("0.1");
   let currentChain: NetworkInterface;
   let lotteryContract: Lottery;
@@ -230,7 +230,32 @@ describe("Lottery Unit Tests", function () {
       const player3 = await lotteryContract.getPlayer(2);
       log(`player3: ${player3}`);
 
+      lotteryContract = lotteryContract.connect(signers[3]);
+      const joinLotteryResponse4 = await lotteryContract.joinLottery({
+        value: ACCEPTABLE_LOTTERY_FEE,
+      });
+      await joinLotteryResponse4.wait(1);
+      const player4 = await lotteryContract.getPlayer(3);
+      log(`player4: ${player4}`);
+
+      lotteryContract = lotteryContract.connect(signers[4]);
+      const joinLotteryResponse5 = await lotteryContract.joinLottery({
+        value: ACCEPTABLE_LOTTERY_FEE,
+      });
+      await joinLotteryResponse5.wait(1);
+      const player5 = await lotteryContract.getPlayer(4);
+      log(`player5: ${player5}`);
+
+      // lotteryContract = lotteryContract.connect(signers[5]);
+      // const joinLotteryResponse6 = await lotteryContract.joinLottery({
+      //   value: ACCEPTABLE_LOTTERY_FEE,
+      // });
+      // await joinLotteryResponse5.wait(1);
+      // const player6 = await lotteryContract.getPlayer(5);
+      // log(`player6: ${player6}`);
+
       await correctTimestampBy(currentChain.interval);
+      lotteryContract = lotteryContract.connect(signers[0]);
       await lotteryContract.performUpkeep("0x");
       const lotteryRandomIdFilter = lotteryContract.filters.LotteryRandomId;
       const events = await lotteryContract.queryFilter(
@@ -268,6 +293,98 @@ describe("Lottery Unit Tests", function () {
       assert.equal(players.length, 0);
       const latestTimestamp = await lotteryContract.getLatestTimestamp();
       assert.notEqual(latestTimestamp, lastTimestamp);
+
+      async function testAgain() {
+        const lotteryAddress = await lotteryContract.getAddress();
+        const lastTimestamp = await lotteryContract.getLatestTimestamp();
+        lotteryContract = lotteryContract.connect(signers[1]);
+        const joinLotteryResponse1 = await lotteryContract.joinLottery({
+          value: ACCEPTABLE_LOTTERY_FEE,
+        });
+        await joinLotteryResponse1.wait(1);
+        const player1 = await lotteryContract.getPlayer(0);
+        log(`player1: ${player1}`);
+
+        lotteryContract = lotteryContract.connect(signers[0]);
+        const joinLotteryResponse2 = await lotteryContract.joinLottery({
+          value: ACCEPTABLE_LOTTERY_FEE,
+        });
+        await joinLotteryResponse2.wait(1);
+        const player2 = await lotteryContract.getPlayer(1);
+        log(`player2: ${player2}`);
+
+        lotteryContract = lotteryContract.connect(signers[2]);
+        const joinLotteryResponse3 = await lotteryContract.joinLottery({
+          value: ACCEPTABLE_LOTTERY_FEE,
+        });
+        await joinLotteryResponse3.wait(1);
+        const player3 = await lotteryContract.getPlayer(2);
+        log(`player3: ${player3}`);
+
+        lotteryContract = lotteryContract.connect(signers[3]);
+        const joinLotteryResponse4 = await lotteryContract.joinLottery({
+          value: ACCEPTABLE_LOTTERY_FEE,
+        });
+        await joinLotteryResponse4.wait(1);
+        const player4 = await lotteryContract.getPlayer(3);
+        log(`player4: ${player4}`);
+
+        lotteryContract = lotteryContract.connect(signers[4]);
+        const joinLotteryResponse5 = await lotteryContract.joinLottery({
+          value: ACCEPTABLE_LOTTERY_FEE,
+        });
+        await joinLotteryResponse5.wait(1);
+        const player5 = await lotteryContract.getPlayer(4);
+        log(`player5: ${player5}`);
+
+        lotteryContract = lotteryContract.connect(signers[5]);
+        const joinLotteryResponse6 = await lotteryContract.joinLottery({
+          value: ACCEPTABLE_LOTTERY_FEE,
+        });
+        await joinLotteryResponse5.wait(1);
+        const player6 = await lotteryContract.getPlayer(5);
+        log(`player6: ${player6}`);
+
+        await correctTimestampBy(currentChain.interval);
+        lotteryContract = lotteryContract.connect(signers[0]);
+        await lotteryContract.performUpkeep("0x");
+        const lotteryRandomIdFilter = lotteryContract.filters.LotteryRandomId;
+        const events = await lotteryContract.queryFilter(
+          lotteryRandomIdFilter,
+          -1
+        );
+        const requestId = events[0].args[0];
+        const trxResponse =
+          await vrfCoordinatorV2_5MockContract.fulfillRandomWords(
+            requestId,
+            lotteryAddress
+          );
+        trxResponse.wait(1);
+
+        const lotteryWinnerPickedFilter =
+          lotteryContract.filters.LotteryWinnerPicked;
+        const events2 = await lotteryContract.queryFilter(
+          lotteryWinnerPickedFilter,
+          -1
+        );
+        const winnerAddress = events2[0].args[0];
+        log(`Winner: ${winnerAddress}`);
+
+        const signerAddresses = signers.map((signer) => signer.address);
+
+        assert.equal(signerAddresses.includes(winnerAddress), true);
+
+        const recentWinner = await lotteryContract.getRecentWinner();
+        assert.equal(winnerAddress, recentWinner);
+        const balance = await ethers.provider.getBalance(lotteryAddress);
+        assert.equal(balance, 0n);
+        const lotteryState = await lotteryContract.getLotteryState();
+        assert.equal(lotteryState, 0n);
+        const players = await lotteryContract.getPlayers();
+        assert.equal(players.length, 0);
+        const latestTimestamp = await lotteryContract.getLatestTimestamp();
+        assert.notEqual(latestTimestamp, lastTimestamp);
+      }
     });
   });
 });

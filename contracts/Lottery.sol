@@ -58,7 +58,10 @@ contract Lottery is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
 
     event LotteryJoined(address indexed player);
     event LotteryRandomId(uint256 indexed requestId);
-    event LotteryWinnerPicked(address indexed winner);
+    event LotteryWinnerPicked(
+        address indexed winner,
+        uint256 indexed randomWord
+    );
 
     // Constructor
     constructor(
@@ -135,7 +138,7 @@ contract Lottery is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
         if (!success) {
             revert Lottery__TransferFailed();
         }
-        emit LotteryWinnerPicked(winner);
+        emit LotteryWinnerPicked(winner, randomWords[0]);
     }
 
     // Private
