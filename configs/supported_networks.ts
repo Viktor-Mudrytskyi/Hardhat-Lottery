@@ -1,5 +1,5 @@
-import { NetworkInterface } from "./network_interface";
 import * as dotenv from "dotenv";
+import { NetworkInterface } from "./network_interface";
 
 dotenv.config();
 
@@ -17,36 +17,36 @@ export const ethSepoliaNetwork: NetworkInterface = {
   rpcUrl: ethSepoliaRpc,
   chainId: 11155111,
   vrfCoordinator: "0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B",
-  entranceFeeEth: "0.005",
+  entranceFeeEth: "0.05",
   isLocal: false,
   gasLane: "0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae",
-  VrfSubscriptionId:
+  vrfSubscriptionId:
     "48235071697253916649246285372953863505341286224160827263486974774179303788771",
   callbackGasLimit: "500000",
-  interval: "30",
+  interval: "60",
 };
 
 export const hardhatLocal: NetworkInterface = {
   name: "Hard-Hat",
   deployName: "hardhat",
   chainId: 31337,
-  entranceFeeEth: "0.005",
+  entranceFeeEth: "0.05",
   isLocal: true,
   gasLane: "0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae",
   callbackGasLimit: "500000",
-  interval: "30",
+  interval: "60",
 };
 
 export const localhost: NetworkInterface = {
   name: "Localhost",
   deployName: "localhost",
   chainId: 31337,
-  entranceFeeEth: "0.005",
+  entranceFeeEth: "0.05",
   rpcUrl: "http://127.0.0.1:8545/",
   isLocal: true,
   gasLane: "0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae",
   callbackGasLimit: "500000",
-  interval: "30",
+  interval: "60",
 };
 
 export const chainIdToSupportedNetworks = {

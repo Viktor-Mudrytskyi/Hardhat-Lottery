@@ -6,15 +6,16 @@ import "@nomicfoundation/hardhat-chai-matchers";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-ignition-ethers";
 import "solidity-coverage";
+import "hardhat-gas-reporter";
 import {
   ethSepoliaNetwork,
   hardhatLocal,
   localhost,
-} from "./networks/supported_networks";
+} from "./configs/supported_networks";
 dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY || "";
-const etherscanApiKey = process.env.ETHERSCAN_API_KEY;
+// const etherscanApiKey = process.env.ETHERSCAN_API_KEY;
 const coinmarketCapApiKey = process.env.COIMARKETCAP_API_KEY;
 const ethSepoliaGasPriceApi = process.env.SEPOLIA_ETH_GAS_PRICE_API;
 
@@ -26,6 +27,9 @@ const config: HardhatUserConfig = {
       },
       {
         version: "0.8.0",
+      },
+      {
+        version: "0.8.19",
       },
     ],
   },
@@ -49,6 +53,13 @@ const config: HardhatUserConfig = {
       accounts: [privateKey],
       chainId: ethSepoliaNetwork.chainId,
     },
+  },
+  gasReporter: {
+    // enabled: true,
+    enabled: false,
+    currency: "USD",
+    coinmarketcap: coinmarketCapApiKey,
+    gasPriceApi: ethSepoliaGasPriceApi, // ETH Sepolia gas price
   },
 };
 

@@ -7,7 +7,7 @@ export interface NetworkInterface {
   entranceFeeEth: string;
   isLocal: boolean;
   gasLane: string;
-  VrfSubscriptionId?: string;
+  vrfSubscriptionId?: string;
   callbackGasLimit: string;
   interval: string;
 }

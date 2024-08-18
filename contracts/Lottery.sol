@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-import "@chainlink/contracts/src/v0.8/vrf/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 import "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import "@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
 
@@ -30,7 +30,7 @@ error Lottery__LotteryUpkeepNotNeeded(
 
 // Contracts
 
-contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
+contract Lottery is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
     // Type declarations and usings
     enum LotteryState {
         OPEN,
@@ -39,9 +39,8 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
 
     // Constants/Immutables
     uint256 private immutable i_entranceFeeWei;
-    VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     bytes32 private immutable i_keyHash;
-    uint64 private immutable i_subscriptionId;
+    uint256 private immutable i_subscriptionId;
     uint32 private immutable i_callbackGasLimit;
     uint256 private immutable i_interval;
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
@@ -66,12 +65,11 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
         uint256 entranceFee,
         address vrfCoordinator,
         bytes32 keyHash,
-        uint64 subscriptionId,
+        uint256 subscriptionId,
         uint32 callbackGasLimit,
         uint256 interval
-    ) VRFConsumerBaseV2(vrfCoordinator) {
+    ) VRFConsumerBaseV2Plus(vrfCoordinator) {
         i_entranceFeeWei = entranceFee;
-        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinator);
         i_keyHash = keyHash;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
@@ -93,12 +91,17 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
             );
         }
         s_lotteryState = LotteryState.CALCULATING;
-        uint256 requestId = i_vrfCoordinator.requestRandomWords(
-            i_keyHash, // gasLane
-            i_subscriptionId,
-            REQUEST_CONFIRMATIONS,
-            i_callbackGasLimit,
-            NUM_WORDS
+        uint256 requestId = s_vrfCoordinator.requestRandomWords(
+            VRFV2PlusClient.RandomWordsRequest({
+                keyHash: i_keyHash,
+                subId: i_subscriptionId,
+                requestConfirmations: REQUEST_CONFIRMATIONS,
+                callbackGasLimit: i_callbackGasLimit,
+                numWords: NUM_WORDS,
+                extraArgs: VRFV2PlusClient._argsToBytes(
+                    VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
+                )
+            })
         );
 
         emit LotteryRandomId(requestId);
@@ -119,10 +122,10 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
 
     // Internal
     function fulfillRandomWords(
-        uint256, // Leaves variable blank but still alows override
-        uint256[] memory randomness
+        uint256 /*requestId*/,
+        uint256[] calldata randomWords
     ) internal override {
-        uint256 winnerIndex = randomness[0] % s_players.length;
+        uint256 winnerIndex = randomWords[0] % s_players.length;
         address payable winner = s_players[winnerIndex];
         s_recentWinner = winner;
         s_lotteryState = LotteryState.OPEN;
@@ -153,6 +156,8 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
         bool hasBalance = address(this).balance > 0;
         // apparantly this works ???
         upkeepNeeded = isOpen && timePassed && hasPlayers && hasBalance;
+
+        return (upkeepNeeded, bytes(""));
     }
 
     function getRecentWinner() public view returns (address) {
@@ -189,5 +194,9 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
 
     function getPlayer(uint256 index) public view returns (address) {
         return s_players[index];
+    }
+
+    function getPlayers() public view returns (address payable[] memory) {
+        return s_players;
     }
 }

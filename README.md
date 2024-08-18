@@ -18,6 +18,7 @@ npm install --save-dev @nomicfoundation/hardhat-ignition-ethers
 npm install --save-dev @nomicfoundation/hardhat-chai-matchers
 npm install --save-dev @nomicfoundation/hardhat-network-helpers
 npm install --save-dev @nomicfoundation/hardhat-ethers ethers
+npm install --save-dev hardhat-gas-reporter
 npm install @chainlink/contracts --save
 
 # TS
