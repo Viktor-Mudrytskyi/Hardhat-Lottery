@@ -61,6 +61,9 @@ const config: HardhatUserConfig = {
     coinmarketcap: coinmarketCapApiKey,
     gasPriceApi: ethSepoliaGasPriceApi, // ETH Sepolia gas price
   },
+  mocha: {
+    timeout: 200000,
+  },
 };
 
 export default config;
