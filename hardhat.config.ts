@@ -62,7 +62,10 @@ const config: HardhatUserConfig = {
     gasPriceApi: ethSepoliaGasPriceApi, // ETH Sepolia gas price
   },
   mocha: {
-    timeout: 200000,
+    timeout: 4000000,
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY,
   },
 };
 

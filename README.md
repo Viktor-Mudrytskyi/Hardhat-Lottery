@@ -7,6 +7,7 @@ npx hardhat compile
 npx hardhat node
 npx hardhat ignition deploy ignition/modules/Lottery.ts --network localhost
 npx hardhat coverage
+npx hardhat ignition verify chain-11155111
 
 # Installs
 
@@ -20,6 +21,7 @@ npm install --save-dev @nomicfoundation/hardhat-network-helpers
 npm install --save-dev @nomicfoundation/hardhat-ethers ethers
 npm install --save-dev hardhat-gas-reporter
 npm install @chainlink/contracts --save
+npm install --save-dev @nomicfoundation/hardhat-verify
 
 # TS
 

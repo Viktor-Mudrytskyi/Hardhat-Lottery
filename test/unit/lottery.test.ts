@@ -6,7 +6,6 @@ import { expect, assert } from "chai";
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { log } from "console";
 import { correctTimestampBy } from "../../utils/hardhat-network-utils";
-import { rejects } from "assert";
 
 describe("Lottery Unit Tests", function () {
   const BASE_FEE = ethers.parseEther("0.25");

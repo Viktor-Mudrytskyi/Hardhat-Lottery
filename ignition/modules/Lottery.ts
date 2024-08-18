@@ -2,6 +2,7 @@ import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 import { chainIdToSupportedNetworks } from "../../configs/supported_networks";
 import { NetworkInterface } from "../../configs/network_interface";
 import { ethers, network } from "hardhat";
+import { verify } from "crypto";
 
 const LotteryModule = buildModule("LotteryModule", (m) => {
   const chain: NetworkInterface | undefined =
