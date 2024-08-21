@@ -20,7 +20,6 @@ npm install --save-dev @nomicfoundation/hardhat-chai-matchers
 npm install --save-dev @nomicfoundation/hardhat-network-helpers
 npm install --save-dev @nomicfoundation/hardhat-ethers ethers
 npm install --save-dev hardhat-gas-reporter
-npm install @chainlink/contracts --save
 npm install --save-dev @nomicfoundation/hardhat-verify
 
 # TS
@@ -35,3 +34,8 @@ npm install --save-dev typechain @typechain/hardhat @typechain/ethers-v6
 
 npx hardhat test // Will run all in test folder
 npx hardhat test --grep "ff"
+
+# Solidity
+
+npm install @chainlink/contracts --save
+npm install @openzeppelin/contracts
