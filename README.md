@@ -2,6 +2,7 @@
 
 # Commands
 
+npx hardhat init
 npx hardhat typechain
 npx hardhat compile
 npx hardhat node
@@ -11,9 +12,8 @@ npx hardhat ignition verify chain-11155111
 
 # Installs
 
-npm install --save-dev hardhat
-npx hardhat init
 npm install
+npm install --save-dev hardhat
 npm install dotenv --save
 npm install --save-dev @nomicfoundation/hardhat-ignition-ethers
 npm install --save-dev @nomicfoundation/hardhat-chai-matchers
@@ -34,3 +34,4 @@ npm install --save-dev typechain @typechain/hardhat @typechain/ethers-v6
 # Testing
 
 npx hardhat test // Will run all in test folder
+npx hardhat test --grep "ff"
